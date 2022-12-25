@@ -28,6 +28,12 @@ export class InvalidTokenError extends HttpError {
   }
 }
 
+export class InvalidRequestError extends HttpError {
+  constructor(message: string) {
+    super(400, message);
+  }
+}
+
 export const HandleError: ErrorRequestHandler = (error, req, res, next) => {
   if (error instanceof HttpError) {
     res.status(error.status).json({ error: error.message });

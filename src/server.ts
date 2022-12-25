@@ -1,4 +1,5 @@
 import express from 'express';
+import fileupload from 'express-fileupload';
 import { HandleError } from './utils/error-handling';
 
 export class App {
@@ -6,6 +7,10 @@ export class App {
 
   constructor() {
     this.app.use(express.json());
+
+    this.app.use(fileupload({
+      debug: true,
+    }));
 
     this.app.use((_req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
