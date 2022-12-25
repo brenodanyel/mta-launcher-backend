@@ -8,9 +8,7 @@ export class App {
   constructor() {
     this.app.use(express.json());
 
-    this.app.use(fileupload({
-      debug: true,
-    }));
+    this.app.use(fileupload());
 
     this.app.use((_req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
