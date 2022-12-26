@@ -33,7 +33,7 @@ export class Service extends UsersService {
       JWT_SECRET,
     );
 
-    return token;
+    return 'Bearer ' + token;
   }
 
   public async signUp(params: { username: string, email: string, password: string; }): Promise<string> {
@@ -52,7 +52,7 @@ export class Service extends UsersService {
       JWT_SECRET,
     );
 
-    return token;
+    return 'Bearer ' + token;
   }
 
   public async verify(rawToken: string) {

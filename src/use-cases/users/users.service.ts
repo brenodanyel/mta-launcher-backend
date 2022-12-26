@@ -1,12 +1,12 @@
 import { ConflictError } from '../../utils/error-handling';
-import { IUsersModel } from './models/users.model.interface';
-import { InMemoryModel } from './models/users.model.in-memory';
+import { IUsersModel } from './models';
+import { PrismaModel } from './models/users.model.prisma';
 import * as validators from './users.validators';
 import { hash } from 'bcryptjs';
 import { randomUUID } from 'node:crypto';
 
 export class Service {
-  constructor(private model: IUsersModel = new InMemoryModel()) { }
+  constructor(private model: IUsersModel = new PrismaModel()) { }
 
   async findUserById(id: string) {
     return this.model.findUserById(id);
@@ -55,6 +55,6 @@ export class Service {
       throw new Error('User not found!');
     }
 
-    return this.model.deleteUser(user);
+    return this.model.deleteUser(user.id);
   }
 }

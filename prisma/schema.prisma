@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id
+  email          String          @unique
+  username       String          @unique
+  password       String
+  serverProfiles ServerProfile[]
+
+  @@map("users")
+}
+
+model Product {
+  id         String             @id
+  name       String
+  price      Float
+  advantages ProductAdvantage[]
+  active     Boolean            @default(true)
+
+  @@map("products")
+}
+
+model ProductAdvantage {
+  id          String  @id @default(uuid())
+  description String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  productId   String
+
+  @@map("product_advantages")
+}
+
+model ServerProfile {
+  id            String                      @id
+  ip            String
+  port          Int
+  description   String
+  logo          String
+  externalLinks ServerProfileExternalLink[]
+  createdAt     DateTime                    @default(now())
+  removeAt      DateTime?
+  active        Boolean                     @default(true)
+  owner         User                        @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId       String
+
+  @@map("server_profiles")
+}
+
+model ServerProfileExternalLink {
+  id       String        @id @default(uuid())
+  server   ServerProfile @relation(fields: [serverId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  serverId String
+  name     String
+  url      String
+
+  @@map("server_profile_external_links")
+}

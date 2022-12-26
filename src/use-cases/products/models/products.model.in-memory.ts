@@ -1,4 +1,4 @@
-import { Product, IProductsModel } from './products.model.interface';
+import { Product, IProductsModel } from '.';
 
 export class InMemoryModel implements IProductsModel {
   private products: Product[] = [];
@@ -25,18 +25,18 @@ export class InMemoryModel implements IProductsModel {
     return product;
   }
 
-  async deleteProduct(product: Product): Promise<void> {
-    this.products = this.products.filter((_product) => {
-      return !(product.id === _product.id);
+  async deleteProduct(id: string): Promise<void> {
+    this.products = this.products.filter((product) => {
+      return !(product.id === id);
     });
   }
 
-  async updateProduct(product: Product, changes: Partial<Product>): Promise<Product> {
+  async updateProduct(id: string, changes: Partial<Product>): Promise<Product> {
     let found;
 
-    this.products = this.products.map((_product) => {
-      if (product.id === _product.id) {
-        const result = { ..._product, ...changes };
+    this.products = this.products.map((product) => {
+      if (product.id === id) {
+        const result = { ...product, ...changes };
         found = result;
         return result;
       }

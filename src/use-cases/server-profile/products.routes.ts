@@ -1,5 +1,5 @@
 import { Router as ExpressRouter } from 'express';
-import { Controller } from './products.controller';
+import { Controller } from './server-profile.controller';
 
 export class Router {
   public readonly router = ExpressRouter();
@@ -15,9 +15,15 @@ export class Router {
       .get(this.controller.getAll)
       .post(this.controller.create);
 
+    this.router.route('/me')
+      .get(this.controller.getAllMine);
+
     this.router.route('/:id')
       .patch(this.controller.update)
       .delete(this.controller.delete)
       .get(this.controller.getById);
+
+    this.router.route('/:ip/:port')
+      .get(this.controller.getByIpAndPort);
   }
 }

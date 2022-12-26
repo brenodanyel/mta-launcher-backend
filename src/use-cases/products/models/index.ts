@@ -3,6 +3,7 @@ export type Product = {
   name: string;
   price: number;
   advantages: string[];
+  active: boolean;
 };
 
 export interface IProductsModel {
@@ -10,6 +11,6 @@ export interface IProductsModel {
   getByName(name: string): Promise<Product | null>;
   getProductById(id: string): Promise<Product | null>;
   createProduct(product: Product): Promise<Product>;
-  updateProduct(product: Product, changes: Partial<Product>): Promise<Product>;
-  deleteProduct(product: Product): Promise<void>;
+  updateProduct(id: string, changes: Partial<Product>): Promise<Product>;
+  deleteProduct(id: string): Promise<void>;
 }

@@ -1,4 +1,4 @@
-import { User, IUsersModel } from './users.model.interface';
+import { User, IUsersModel } from '.';
 
 export class InMemoryModel implements IUsersModel {
   private users: User[] = [];
@@ -24,9 +24,9 @@ export class InMemoryModel implements IUsersModel {
     return user;
   }
 
-  async deleteUser(user: User): Promise<void> {
-    this.users = this.users.filter((_user) => {
-      return !(user.id === _user.id);
+  async deleteUser(userId: string): Promise<void> {
+    this.users = this.users.filter((user) => {
+      return !(user.id === userId);
     });
   }
 

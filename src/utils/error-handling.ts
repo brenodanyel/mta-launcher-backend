@@ -36,7 +36,7 @@ export class InvalidRequestError extends HttpError {
 
 export const HandleError: ErrorRequestHandler = (error, req, res, next) => {
   if (error instanceof HttpError) {
-    res.status(error.status).json({ error: error.message });
+    res.status(error.status).json({ errors: [{ message: error.message }] });
     return;
   }
 

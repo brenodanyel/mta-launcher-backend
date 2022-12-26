@@ -10,6 +10,6 @@ export interface IUsersModel {
   findUserByEmail(email: string): Promise<User | null>;
   findUserByUsername(username: string): Promise<User | null>;
   createUser(user: User): Promise<User>;
-  deleteUser(user: User): Promise<void>;
-  updateUser(user: User, changes: Partial<User>): Promise<User>;
+  deleteUser(id: string): Promise<void>;
+  updateUser(id: string, overrides: Partial<User>): Promise<User>;
 }
