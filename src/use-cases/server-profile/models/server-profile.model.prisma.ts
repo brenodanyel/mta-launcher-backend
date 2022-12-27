@@ -7,13 +7,21 @@ import { ServerProfile, IServerProfileRepository } from '.';
 import { client } from '../../../../prisma';
 
 export class PrismaModel implements IServerProfileRepository {
-  private convert = (original: PrismaServerProfile & { externalLinks: PrismaServerProfileExternalLink[]; }): ServerProfile => ({
+  private convert = (
+    original: PrismaServerProfile & {
+      externalLinks: PrismaServerProfileExternalLink[];
+    },
+  ): ServerProfile => ({
     id: original.id,
     ip: original.ip,
     port: original.port,
     description: original.description,
     logo: original.logo,
-    externalLinks: original.externalLinks.map((externalLink) => ({ id: externalLink.id, name: externalLink.name, url: externalLink.url })),
+    externalLinks: original.externalLinks.map((externalLink) => ({
+      id: externalLink.id,
+      name: externalLink.name,
+      url: externalLink.url,
+    })),
     active: original.active,
     createdAt: original.createdAt,
     removeAt: original.removeAt,
@@ -24,6 +32,9 @@ export class PrismaModel implements IServerProfileRepository {
     const serverProfiles = await client.serverProfile.findMany({
       include: {
         externalLinks: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -47,8 +58,8 @@ export class PrismaModel implements IServerProfileRepository {
     const serverProfile = await client.serverProfile.findFirst({
       where: { id },
       include: {
-        externalLinks: true
-      }
+        externalLinks: true,
+      },
     });
 
     if (!serverProfile) {
@@ -58,15 +69,18 @@ export class PrismaModel implements IServerProfileRepository {
     return this.convert(serverProfile);
   }
 
-  async getByIpAndPort(ip: string, port: number): Promise<ServerProfile | null> {
+  async getByIpAndPort(
+    ip: string,
+    port: number,
+  ): Promise<ServerProfile | null> {
     const serverProfile = await client.serverProfile.findFirst({
       where: {
         ip,
         port,
       },
       include: {
-        externalLinks: true
-      }
+        externalLinks: true,
+      },
     });
 
     if (!serverProfile) {
@@ -92,7 +106,7 @@ export class PrismaModel implements IServerProfileRepository {
           create: serverProfile.externalLinks.map((externalLink) => ({
             name: externalLink.name,
             url: externalLink.url,
-          }))
+          })),
         },
       },
       include: {
@@ -103,7 +117,10 @@ export class PrismaModel implements IServerProfileRepository {
     return this.convert(created);
   }
 
-  async update(id: string, overrides: Partial<ServerProfile>): Promise<ServerProfile> {
+  async update(
+    id: string,
+    overrides: Partial<ServerProfile>,
+  ): Promise<ServerProfile> {
     const updated = await client.serverProfile.update({
       where: { id },
       data: {
@@ -120,7 +137,7 @@ export class PrismaModel implements IServerProfileRepository {
           create: overrides.externalLinks?.map((externalLink) => ({
             name: externalLink.name,
             url: externalLink.url,
-          }))
+          })),
         },
       },
       include: {
