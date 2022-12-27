@@ -13,7 +13,7 @@ export class PrismaModel implements IServerProfileRepository {
     port: original.port,
     description: original.description,
     logo: original.logo,
-    externalLinks: original.externalLinks.map((externalLink) => ({ name: externalLink.name, url: externalLink.url })),
+    externalLinks: original.externalLinks.map((externalLink) => ({ id: externalLink.id, name: externalLink.name, url: externalLink.url })),
     active: original.active,
     createdAt: original.createdAt,
     removeAt: original.removeAt,

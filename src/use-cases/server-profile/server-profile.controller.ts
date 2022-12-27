@@ -120,7 +120,7 @@ export class Controller {
         externalLinks: externalLinks ? JSON.parse(externalLinks) : undefined,
         ownerId: user.id,
       });
-      res.status(201).json(product);
+      res.status(200).json(product);
     } catch (e) {
       next(e);
     }

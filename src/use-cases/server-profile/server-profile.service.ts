@@ -93,10 +93,15 @@ export class Service {
     }
 
     const uploaded = logo && await this.awsS3Helper.uploadFile({
-      file: logo,
+      file: {
+        data: logo.data,
+        mimetype: logo.mimetype,
+        name: logo.name,
+      },
       fileId: id,
       folder: 'logos',
     });
+
 
     const updated = this.model.update(id, {
       ip,
