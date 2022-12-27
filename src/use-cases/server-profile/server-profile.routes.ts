@@ -1,4 +1,5 @@
 import { Router as ExpressRouter } from 'express';
+import { RolesMiddleware } from '../../utils/roles.middleware';
 import { Controller } from './server-profile.controller';
 
 export class Router {
@@ -13,7 +14,7 @@ export class Router {
   setup() {
     this.router.route('/')
       .get(this.controller.getAll)
-      .post(this.controller.create);
+      .post(RolesMiddleware(['admin']), this.controller.create);
 
     this.router.route('/me')
       .get(this.controller.getAllMine);

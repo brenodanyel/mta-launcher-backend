@@ -3,6 +3,11 @@ export type User = {
   email: string;
   username: string;
   password: string;
+  roles?: {
+    id: string;
+    slug: string;
+    name: string;
+  }[];
 };
 
 export interface IUsersModel {

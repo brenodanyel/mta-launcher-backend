@@ -6,12 +6,16 @@
     "build": "tsc --project ./",
     "start": "node ./out/src/index",
     "dev": "ts-node-dev --respawn --transpile-only --exit-child --watch src src/index.ts",
+    "db:seed": "npx prisma db seed",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^4.8.0",
     "aws-sdk": "^2.1282.0",

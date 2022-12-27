@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,8 +16,19 @@ model User {
   username       String          @unique
   password       String
   serverProfiles ServerProfile[]
+  roles          Role[]
 
   @@map("users")
+}
+
+model Role {
+  id   String @id @default(uuid())
+  slug String @unique
+  name String
+  User User[]
+
+  @@index([id, slug])
+  @@map("roles")
 }
 
 model Product {

@@ -9,11 +9,17 @@ export class PrismaModel implements IUsersModel {
       email: input.email,
       username: input.username,
       password: input.password,
+      roles: input.roles,
     };
   }
 
   async findUserById(id: string): Promise<User | null> {
-    const user = await client.user.findUnique({ where: { id } });
+    const user = await client.user.findUnique({
+      where: { id },
+      include: {
+        roles: true,
+      }
+    });
 
     if (!user) {
       return null;
@@ -23,7 +29,12 @@ export class PrismaModel implements IUsersModel {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const user = await client.user.findUnique({ where: { email } });
+    const user = await client.user.findUnique({
+      where: { email },
+      include: {
+        roles: true,
+      },
+    });
 
     if (!user) {
       return null;
@@ -33,7 +44,12 @@ export class PrismaModel implements IUsersModel {
   }
 
   async findUserByUsername(username: string): Promise<User | null> {
-    const user = await client.user.findUnique({ where: { username } });
+    const user = await client.user.findUnique({
+      where: { username },
+      include: {
+        roles: true,
+      },
+    });
 
     if (!user) {
       return null;
@@ -49,7 +65,10 @@ export class PrismaModel implements IUsersModel {
         email: data.email,
         password: data.password,
         username: data.username,
-      }
+      },
+      include: {
+        roles: true,
+      },
     });
 
     return this.convert(user);
@@ -68,7 +87,10 @@ export class PrismaModel implements IUsersModel {
         email: overrides.email,
         password: overrides.password,
         username: overrides.username,
-      }
+      },
+      include: {
+        roles: true,
+      },
     });
 
     return this.convert(updated);

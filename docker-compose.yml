@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  # app:
+  #   build: .
+  #   container_name: app
+  #   command: npm run dev
+  #   volumes:
+  #     - ./:/app
+  #   ports:
+  #     - '${PORT}:${PORT}'
+  #   expose:
+  #     - '${PORT}'
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DATABASE_URL: 'postgresql://${DB_USER}:${DB_PASS}@db:${DB_PORT}/${DB_NAME}'
+  db:
+    container_name: db
+    image: postgres:14
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '123456'
+      POSTGRES_DB: 'MTALauncher'
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5432:5432'
+volumes:
+  postgres:

@@ -1,4 +1,4 @@
-import { Router } from './products.routes';
+import { Router } from './server-profile.routes';
 import { Controller } from './server-profile.controller';
 import { Service } from './server-profile.service';
 import { PrismaModel } from './models/server-profile.model.prisma';
