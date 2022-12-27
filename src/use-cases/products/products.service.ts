@@ -5,9 +5,7 @@ import { ConflictError, NotFoundError } from '../../utils/error-handling';
 import * as validators from './products.validators';
 
 export class Service {
-  constructor(
-    private model: IProductsModel = new InMemoryModel()
-  ) { }
+  constructor(private model: IProductsModel = new InMemoryModel()) {}
 
   async create(params: validators.Create) {
     await validators.create.parseAsync(params);
@@ -20,7 +18,9 @@ export class Service {
 
     const product = this.model.createProduct({
       id: uuidv4(),
-      name, price, advantages,
+      name,
+      price,
+      advantages,
       active: true,
     });
 
@@ -40,6 +40,10 @@ export class Service {
   async update(id: string, params: validators.Update) {
     await validators.update.parseAsync(params);
 
+    if (!(await this.model.getProductById(id))) {
+      throw new NotFoundError('Product not found');
+    }
+
     const { name, price, advantages, active } = params;
 
     if (name) {
@@ -57,7 +61,7 @@ export class Service {
 
     const { id } = params;
 
-    if (!await this.model.getProductById(id)) {
+    if (!(await this.model.getProductById(id))) {
       throw new NotFoundError('Product not found');
     }
 

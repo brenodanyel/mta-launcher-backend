@@ -2,9 +2,7 @@ import { RequestHandler } from 'express';
 import { Service } from './products.service';
 
 export class Controller {
-  constructor(
-    private service: Service = new Service(),
-  ) { }
+  constructor(private service: Service = new Service()) {}
 
   public readonly create: RequestHandler<
     {},
@@ -12,7 +10,10 @@ export class Controller {
     {
       name: string;
       price: number;
-      advantages: string[];
+      advantages: {
+        id: string;
+        description: string;
+      }[];
     }
   > = async (req, res, next) => {
     try {
@@ -33,11 +34,9 @@ export class Controller {
     }
   };
 
-  public readonly getById: RequestHandler<
-    {
-      id: string;
-    }
-  > = async (req, res, next) => {
+  public readonly getById: RequestHandler<{
+    id: string;
+  }> = async (req, res, next) => {
     try {
       const { id } = req.params;
       const product = await this.service.getById({ id });
@@ -48,28 +47,38 @@ export class Controller {
   };
 
   public readonly update: RequestHandler<
-    { id: string; },
+    { id: string },
     {},
     {
       name?: string;
       price?: number;
-      advantages?: string[];
+      advantages?: {
+        id: string;
+        description: string;
+      }[];
       active?: boolean;
     }
   > = async (req, res, next) => {
     try {
       const { id } = req.params;
       const { name, price, advantages, active } = req.body;
-      const product = await this.service.update(id, { name, price, advantages, active });
-      res.status(201).json(product);
+      const product = await this.service.update(id, {
+        name,
+        price,
+        advantages,
+        active,
+      });
+      res.status(200).json(product);
     } catch (e) {
       next(e);
     }
   };
 
-  public readonly delete: RequestHandler<
-    { id: string; }
-  > = async (req, res, next) => {
+  public readonly delete: RequestHandler<{ id: string }> = async (
+    req,
+    res,
+    next,
+  ) => {
     try {
       const { id } = req.params;
       await this.service.delete({ id });

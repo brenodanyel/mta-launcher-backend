@@ -22,9 +22,8 @@ export function RolesMiddleware(roles: string[]) {
         }
       }
 
-      res.status(403).json({ error: 'Forbidden' });
-    }
-    catch (e) {
+      res.status(403).json({ errors: [{ message: 'Forbidden' }] });
+    } catch (e) {
       next(e);
     }
   };

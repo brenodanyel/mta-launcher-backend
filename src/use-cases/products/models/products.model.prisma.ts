@@ -1,9 +1,14 @@
 import { Product, IProductsModel } from '.';
-import { Product as PrismaProduct, ProductAdvantage as PrismaProductAdvantage } from '@prisma/client';
+import {
+  Product as PrismaProduct,
+  ProductAdvantage as PrismaProductAdvantage,
+} from '@prisma/client';
 import { client } from '../../../../prisma';
 
 export class PrismaModel implements IProductsModel {
-  private convert(input: PrismaProduct & { advantages: PrismaProductAdvantage[]; }): Product {
+  private convert(
+    input: PrismaProduct & { advantages: PrismaProductAdvantage[] },
+  ): Product {
     return {
       id: input.id,
       active: input.active,
@@ -12,7 +17,7 @@ export class PrismaModel implements IProductsModel {
       advantages: input.advantages.map((advantage) => ({
         id: advantage.id,
         description: advantage.description,
-      }))
+      })),
     };
   }
 
@@ -20,7 +25,10 @@ export class PrismaModel implements IProductsModel {
     const products = await client.product.findMany({
       include: {
         advantages: true,
-      }
+      },
+      orderBy: {
+        created_at: 'asc',
+      },
     });
 
     return products.map(this.convert);
@@ -31,7 +39,7 @@ export class PrismaModel implements IProductsModel {
       where: { name },
       include: {
         advantages: true,
-      }
+      },
     });
 
     if (!product) {
@@ -46,7 +54,7 @@ export class PrismaModel implements IProductsModel {
       where: { id },
       include: {
         advantages: true,
-      }
+      },
     });
 
     if (!product) {
@@ -63,12 +71,14 @@ export class PrismaModel implements IProductsModel {
         name: product.name,
         price: product.price,
         advantages: {
-          create: product.advantages?.map((advantage) => ({ description: advantage.description })),
+          create: product.advantages?.map((advantage) => ({
+            description: advantage.description,
+          })),
         },
       },
       include: {
         advantages: true,
-      }
+      },
     });
 
     return this.convert(newProduct);
@@ -76,7 +86,7 @@ export class PrismaModel implements IProductsModel {
 
   async deleteProduct(id: string): Promise<void> {
     await client.product.delete({
-      where: { id }
+      where: { id },
     });
   }
 
@@ -88,12 +98,15 @@ export class PrismaModel implements IProductsModel {
         price: changes.price,
         advantages: {
           deleteMany: { productId: id },
-          create: changes.advantages?.map((advantage) => ({ description: advantage.description })),
-        }
+          create: changes.advantages?.map((advantage) => ({
+            description: advantage.description,
+          })),
+        },
+        active: changes.active,
       },
       include: {
         advantages: true,
-      }
+      },
     });
 
     return this.convert(updatedProduct);

@@ -37,6 +37,8 @@ model Product {
   price      Float
   advantages ProductAdvantage[]
   active     Boolean            @default(true)
+  created_at DateTime           @default(now())
+  updated_at DateTime           @updatedAt
 
   @@map("products")
 }
