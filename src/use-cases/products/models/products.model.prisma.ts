@@ -1,7 +1,21 @@
 import { Product, IProductsModel } from '.';
+import { Product as PrismaProduct, ProductAdvantage as PrismaProductAdvantage } from '@prisma/client';
 import { client } from '../../../../prisma';
 
 export class PrismaModel implements IProductsModel {
+  private convert(input: PrismaProduct & { advantages: PrismaProductAdvantage[]; }): Product {
+    return {
+      id: input.id,
+      active: input.active,
+      name: input.name,
+      price: input.price,
+      advantages: input.advantages.map((advantage) => ({
+        id: advantage.id,
+        description: advantage.description,
+      }))
+    };
+  }
+
   async getProducts(): Promise<Product[]> {
     const products = await client.product.findMany({
       include: {
@@ -9,13 +23,7 @@ export class PrismaModel implements IProductsModel {
       }
     });
 
-    return products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      advantages: product.advantages.map((advantage) => advantage.description),
-      active: product.active,
-    }));
+    return products.map(this.convert);
   }
 
   async getByName(name: string): Promise<Product | null> {
@@ -30,13 +38,7 @@ export class PrismaModel implements IProductsModel {
       return null;
     }
 
-    return {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      advantages: product.advantages.map((advantage) => advantage.description),
-      active: product.active,
-    };
+    return this.convert(product);
   }
 
   async getProductById(id: string): Promise<Product | null> {
@@ -51,13 +53,7 @@ export class PrismaModel implements IProductsModel {
       return null;
     }
 
-    return {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      advantages: product.advantages.map((advantage) => advantage.description),
-      active: product.active,
-    };
+    return this.convert(product);
   }
 
   async createProduct(product: Product): Promise<Product> {
@@ -67,9 +63,7 @@ export class PrismaModel implements IProductsModel {
         name: product.name,
         price: product.price,
         advantages: {
-          create: product.advantages.map((advantage) => ({
-            description: advantage,
-          })),
+          create: product.advantages?.map((advantage) => ({ description: advantage.description })),
         },
       },
       include: {
@@ -77,13 +71,7 @@ export class PrismaModel implements IProductsModel {
       }
     });
 
-    return {
-      id: newProduct.id,
-      name: newProduct.name,
-      price: newProduct.price,
-      advantages: newProduct.advantages.map((advantage) => advantage.description),
-      active: newProduct.active,
-    };
+    return this.convert(newProduct);
   }
 
   async deleteProduct(id: string): Promise<void> {
@@ -100,7 +88,7 @@ export class PrismaModel implements IProductsModel {
         price: changes.price,
         advantages: {
           deleteMany: { productId: id },
-          create: changes.advantages?.map((advantage) => ({ description: advantage })),
+          create: changes.advantages?.map((advantage) => ({ description: advantage.description })),
         }
       },
       include: {
@@ -108,12 +96,6 @@ export class PrismaModel implements IProductsModel {
       }
     });
 
-    return {
-      id: updatedProduct.id,
-      name: updatedProduct.name,
-      price: updatedProduct.price,
-      advantages: updatedProduct.advantages.map((advantage) => advantage.description),
-      active: updatedProduct.active,
-    };
+    return this.convert(updatedProduct);
   }
 }

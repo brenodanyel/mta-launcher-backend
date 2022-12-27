@@ -2,7 +2,7 @@ export type Product = {
   id: string;
   name: string;
   price: number;
-  advantages: string[];
+  advantages: { id: string; description: string; }[];
   active: boolean;
 };
 
