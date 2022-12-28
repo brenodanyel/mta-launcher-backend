@@ -1,0 +1,11 @@
+fazer ser possivel criar um novo server profile
+ativar/desativar server profile
+alterar dono do server profile
+alterar removeAt de server profile
+
+fazer ser possivel fazer renovação de server profile (add + 30 dias)
+
+integrar com stripe
+
+adicionar captcha no login e registro
+fazer ser possivel redefinir senha
