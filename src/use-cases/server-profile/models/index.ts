@@ -15,6 +15,12 @@ export type ServerProfile = {
   createdAt: Date;
   removeAt?: Date | null;
   active: boolean;
+
+  owner?: {
+    id: string;
+    email: string;
+    username: string;
+  };
 };
 
 export interface IServerProfileRepository {

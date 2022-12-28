@@ -17,7 +17,9 @@ export class Service {
     const { ip, port, description, logo, externalLinks, ownerId } = params;
 
     if (await this.model.getByIpAndPort(ip, port)) {
-      throw new ConflictError('Server profile with this IP and port already exists');
+      throw new ConflictError(
+        'Server profile with this IP and port already exists',
+      );
     }
 
     const id = uuidv4();
@@ -71,7 +73,9 @@ export class Service {
     if (ip && port) {
       const serverProfile = await this.model.getByIpAndPort(ip, port);
       if (serverProfile && serverProfile.id !== id) {
-        throw new ConflictError('Server profile with this IP and port already exists');
+        throw new ConflictError(
+          'Server profile with this IP and port already exists',
+        );
       }
     }
 
@@ -92,16 +96,17 @@ export class Service {
       }
     }
 
-    const uploaded = logo && await this.awsS3Helper.uploadFile({
-      file: {
-        data: logo.data,
-        mimetype: logo.mimetype,
-        name: logo.name,
-      },
-      fileId: id,
-      folder: 'logos',
-    });
-
+    const uploaded =
+      logo &&
+      (await this.awsS3Helper.uploadFile({
+        file: {
+          data: logo.data,
+          mimetype: logo.mimetype,
+          name: logo.name,
+        },
+        fileId: id,
+        folder: 'logos',
+      }));
 
     const updated = this.model.update(id, {
       ip,
@@ -121,7 +126,7 @@ export class Service {
 
     const { id } = params;
 
-    if (!await this.model.getById(id)) {
+    if (!(await this.model.getById(id))) {
       throw new NotFoundError('Server Profile not found');
     }
 

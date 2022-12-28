@@ -1,6 +1,7 @@
 import {
   ServerProfile as PrismaServerProfile,
   ServerProfileExternalLink as PrismaServerProfileExternalLink,
+  User as PrismaUser,
 } from '@prisma/client';
 
 import { ServerProfile, IServerProfileRepository } from '.';
@@ -10,6 +11,7 @@ export class PrismaModel implements IServerProfileRepository {
   private convert = (
     original: PrismaServerProfile & {
       externalLinks: PrismaServerProfileExternalLink[];
+      owner: PrismaUser;
     },
   ): ServerProfile => ({
     id: original.id,
@@ -26,12 +28,18 @@ export class PrismaModel implements IServerProfileRepository {
     createdAt: original.createdAt,
     removeAt: original.removeAt,
     ownerId: original.ownerId,
+    owner: {
+      email: original.owner.email,
+      id: original.owner.id,
+      username: original.owner.username,
+    }
   });
 
   async getAll(): Promise<ServerProfile[]> {
     const serverProfiles = await client.serverProfile.findMany({
       include: {
         externalLinks: true,
+        owner: true
       },
       orderBy: {
         createdAt: 'desc',
@@ -48,6 +56,7 @@ export class PrismaModel implements IServerProfileRepository {
       },
       include: {
         externalLinks: true,
+        owner: true,
       },
     });
 
@@ -59,6 +68,7 @@ export class PrismaModel implements IServerProfileRepository {
       where: { id },
       include: {
         externalLinks: true,
+        owner: true,
       },
     });
 
@@ -80,6 +90,7 @@ export class PrismaModel implements IServerProfileRepository {
       },
       include: {
         externalLinks: true,
+        owner: true,
       },
     });
 
@@ -111,6 +122,7 @@ export class PrismaModel implements IServerProfileRepository {
       },
       include: {
         externalLinks: true,
+        owner: true,
       },
     });
 
@@ -142,6 +154,7 @@ export class PrismaModel implements IServerProfileRepository {
       },
       include: {
         externalLinks: true,
+        owner: true,
       },
     });
 

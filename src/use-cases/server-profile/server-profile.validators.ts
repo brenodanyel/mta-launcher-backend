@@ -28,11 +28,7 @@ export const create = z.object({
           const ext = value.split('.').at(-1);
           return ext && ALLOWED_FILE_TYPES.includes(ext);
         },
-        {
-          message: `Logo file extension is not valid! (allowed types: ${ALLOWED_FILE_TYPES.join(
-            ', ',
-          )})`,
-        },
+        { message: `Logo file extension is not valid! (allowed types: ${ALLOWED_FILE_TYPES.join(', ')})`, },
       ),
       data: z.instanceof(Buffer),
       encoding: z.string(),
@@ -40,12 +36,10 @@ export const create = z.object({
       mimetype: z.string(),
       truncated: z.boolean(),
       size: z.number().max(MAX_FILE_SIZE, {
-        message: `Logo file size is too big! (max size: ${
-          MAX_FILE_SIZE / 1024 / 1024
-        } MB)`,
+        message: `Logo file size is too big! (max size: ${MAX_FILE_SIZE / 1024 / 1024
+          } MB)`,
       }),
     })
-    .optional(),
 });
 export type Create = z.infer<typeof create>;
 
@@ -60,7 +54,9 @@ export const getByIpAndPort = z.object({
 });
 export type GetByIpAndPort = z.infer<typeof getByIpAndPort>;
 
-export const update = create.partial();
+export const update = create.partial({
+  logo: true
+});
 export type Update = z.infer<typeof update>;
 
 export const _delete = z.object({
