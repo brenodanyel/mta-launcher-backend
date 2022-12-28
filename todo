@@ -9,3 +9,5 @@ integrar com stripe
 
 adicionar captcha no login e registro
 fazer ser possivel redefinir senha
+
+armazenar o price no serverProfile pra usar como base na hora da renovação (?) ---- ai já adiciona também uma opção do admin editar esse preço no modal

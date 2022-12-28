@@ -58,6 +58,9 @@ export class PrismaModel implements IServerProfileRepository {
         externalLinks: true,
         owner: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return serverProfiles.map(this.convert);
