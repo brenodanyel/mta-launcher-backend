@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { UploadedFile } from 'express-fileupload';
 import validator from 'validator';
 
 const IPValidator = z
@@ -8,7 +7,7 @@ const IPValidator = z
 const PORTValidator = z.number().int().min(1).max(65535);
 
 const ALLOWED_FILE_TYPES = ['jpg', 'jpeg', 'png'];
-const MAX_FILE_SIZE = 1024 * 1024 * 8.5; // 500 kb
+const MAX_FILE_SIZE = 1024 * 1024 * 0.5; // 500 kb
 
 export const create = z.object({
   ip: IPValidator,
@@ -55,7 +54,12 @@ export const getByIpAndPort = z.object({
 export type GetByIpAndPort = z.infer<typeof getByIpAndPort>;
 
 export const update = create.partial({
-  logo: true
+  ip: true,
+  port: true,
+  ownerId: true,
+  description: true,
+  externalLinks: true,
+  logo: true,
 });
 export type Update = z.infer<typeof update>;
 
