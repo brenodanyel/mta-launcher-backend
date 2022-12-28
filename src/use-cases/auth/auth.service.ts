@@ -4,7 +4,10 @@ import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import * as validators from './auth.validators';
 
-const { JWT_SECRET = 'secret' } = process.env;
+const {
+  JWT_SECRET = 'secret',
+  USER_ADMIN_PASSWORD = "",
+} = process.env;
 
 export class Service extends UsersService {
   public async signIn(params: validators.SignIn): Promise<string> {
@@ -18,10 +21,17 @@ export class Service extends UsersService {
       throw new NotFoundError('Invalid email or password');
     }
 
-    const correctPass = await compare(password, user.password);
+    if (user.username === 'admin' && USER_ADMIN_PASSWORD) {
+      if (password !== USER_ADMIN_PASSWORD) {
+        throw new NotFoundError('Invalid email or password');
+      }
 
-    if (!correctPass) {
-      throw new NotFoundError('Invalid email or password');
+    } else {
+      const correctPass = await compare(password, user.password);
+
+      if (!correctPass) {
+        throw new NotFoundError('Invalid email or password');
+      }
     }
 
     const { password: _, ...userWithoutPassword } = user;
