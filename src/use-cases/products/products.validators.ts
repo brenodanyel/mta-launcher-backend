@@ -6,7 +6,7 @@ export const create = z.object({
   advantages: z.array(
     z.object({
       id: z.string(),
-      description: z.string().min(1).max(50),
+      description: z.string().min(1).max(500),
     })
   ),
 });
