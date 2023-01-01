@@ -24,18 +24,22 @@ export class Service {
 
     const id = uuidv4();
 
-    const uploaded = await this.awsS3Helper.uploadFile({
-      file: logo,
-      fileId: id,
-      folder: 'logos',
-    });
+    let uploaded = null;
+
+    if (logo) {
+      uploaded = await this.awsS3Helper.uploadFile({
+        file: logo,
+        fileId: id,
+        folder: 'logos',
+      });
+    }
 
     const created = await this.model.create({
       id,
       ip,
       port,
       description,
-      logo: uploaded.Location,
+      logo: uploaded?.Location || null,
       active: true,
       createdAt: new Date(),
       removeAt,
@@ -88,7 +92,7 @@ export class Service {
 
     // DELETE PREVIOUS LOGO FROM AWS S3
     if (logo) {
-      const fileName = profile.logo.split('/').at(-1);
+      const fileName = profile.logo?.split('/').at(-1);
       if (fileName) {
         await this.awsS3Helper.deleteFile({
           folder: 'logos',
@@ -135,7 +139,7 @@ export class Service {
     }
 
     // DELETE LOGO FROM AWS S3
-    const fileName = profile.logo.split('/').at(-1);
+    const fileName = profile.logo?.split('/').at(-1);
     if (fileName) {
       await this.awsS3Helper.deleteFile({
         folder: 'logos',

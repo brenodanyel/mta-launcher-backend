@@ -40,6 +40,7 @@ export const create = z.object({
           } MB)`,
       }),
     })
+    .optional()
 });
 export type Create = z.infer<typeof create>;
 

@@ -19,15 +19,22 @@ export class Controller {
       description: string;
       logo: string;
       externalLinks: string;
+      ownerId: string;
       removeAt: string | null;
     }
   > = async (req, res, next) => {
     try {
-      const { ip, port, description, externalLinks, removeAt } = req.body;
+      const { ip, port, description, externalLinks, removeAt, ownerId } = req.body;
       const logo = req.files?.logo as UploadedFile;
       const { authorization } = req.headers;
 
       const user = await this.authService.verify(String(authorization));
+
+      let newOwnerId = user.id;
+
+      if (await hasRole(String(authorization), ['admin']) && ownerId) {
+        newOwnerId = ownerId;
+      }
 
       const product = await this.service.create({
         ip,
@@ -35,7 +42,7 @@ export class Controller {
         description,
         logo,
         externalLinks: JSON.parse(externalLinks),
-        ownerId: user.id,
+        ownerId: newOwnerId,
         removeAt: removeAt ? new Date(removeAt) : null,
       });
 

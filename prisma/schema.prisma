@@ -57,7 +57,7 @@ model ServerProfile {
   ip            String
   port          Int
   description   String
-  logo          String
+  logo          String?
   externalLinks ServerProfileExternalLink[]
   createdAt     DateTime                    @default(now())
   removeAt      DateTime?

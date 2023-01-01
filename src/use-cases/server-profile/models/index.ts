@@ -8,7 +8,7 @@ export type ServerProfile = {
   ip: string;
   port: number;
   description: string;
-  logo: string;
+  logo: string | null;
   externalLinks: ExternalLinks[];
   ownerId: string;
 
