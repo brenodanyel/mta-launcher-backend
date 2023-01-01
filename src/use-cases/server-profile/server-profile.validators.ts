@@ -4,7 +4,7 @@ import validator from 'validator';
 const IPValidator = z
   .string()
   .refine((ip) => validator.isIP(ip), { message: 'IP is not valid' });
-const PORTValidator = z.number().int().min(1).max(65535);
+const PORTValidator = z.coerce.number().int().min(1).max(65535);
 
 const ALLOWED_FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const MAX_FILE_SIZE = 1024 * 1024 * 0.5; // 500 kb

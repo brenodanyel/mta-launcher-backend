@@ -18,7 +18,6 @@ export class Controller {
       description: string;
       logo: string;
       externalLinks: string;
-      ownerId: string;
     }
   > = async (req, res, next) => {
     try {
@@ -43,10 +42,23 @@ export class Controller {
     }
   };
 
-  public readonly getAll: RequestHandler = async (req, res, next) => {
+  public readonly getAll: RequestHandler<
+    {},
+    unknown,
+    {},
+    {
+      ip?: string;
+      port?: string;
+    }
+  > = async (req, res, next) => {
     try {
-      const product = await this.service.getAll();
-      res.status(200).json(product);
+      const { ip, port } = req.query;
+      if (ip && port) {
+        const result = await this.service.getByIpAndPort({ ip, port: Number(port) });
+        res.status(200).json(result);
+      }
+      const result = await this.service.getAll();
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -71,21 +83,6 @@ export class Controller {
     try {
       const { id } = req.params;
       const product = await this.service.getById({ id });
-      res.status(200).json(product);
-    } catch (e) {
-      next(e);
-    }
-  };
-
-  public readonly getByIpAndPort: RequestHandler<
-    {
-      ip: string;
-      port: string;
-    }
-  > = async (req, res, next) => {
-    try {
-      const { ip, port } = req.params;
-      const product = await this.service.getByIpAndPort({ ip, port: Number(port) });
       res.status(200).json(product);
     } catch (e) {
       next(e);

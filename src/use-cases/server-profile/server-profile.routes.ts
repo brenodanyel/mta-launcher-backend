@@ -23,8 +23,5 @@ export class Router {
       .patch(this.controller.update)
       .delete(RolesMiddleware(['admin']), this.controller.delete)
       .get(this.controller.getById);
-
-    this.router.route('/:ip/:port')
-      .get(this.controller.getByIpAndPort);
   }
 }
