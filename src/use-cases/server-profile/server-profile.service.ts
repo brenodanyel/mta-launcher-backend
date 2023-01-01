@@ -14,7 +14,7 @@ export class Service {
   async create(params: validators.Create) {
     await validators.create.parseAsync(params);
 
-    const { ip, port, description, logo, externalLinks, ownerId } = params;
+    const { ip, port, description, logo, externalLinks, ownerId, removeAt } = params;
 
     if (await this.model.getByIpAndPort(ip, port)) {
       throw new ConflictError(
@@ -38,6 +38,7 @@ export class Service {
       logo: uploaded.Location,
       active: true,
       createdAt: new Date(),
+      removeAt,
       ownerId,
       externalLinks,
     });
@@ -68,7 +69,7 @@ export class Service {
   async update(id: string, params: validators.Update) {
     await validators.update.parseAsync(params);
 
-    const { ip, port, description, logo, externalLinks, ownerId } = params;
+    const { ip, port, description, logo, externalLinks, ownerId, removeAt } = params;
 
     if (ip && port) {
       const serverProfile = await this.model.getByIpAndPort(ip, port);
@@ -116,6 +117,7 @@ export class Service {
       active: true,
       ownerId,
       externalLinks,
+      removeAt,
     });
 
     return updated;
@@ -126,8 +128,19 @@ export class Service {
 
     const { id } = params;
 
-    if (!(await this.model.getById(id))) {
+    const profile = await this.model.getById(id);
+
+    if (!profile) {
       throw new NotFoundError('Server Profile not found');
+    }
+
+    // DELETE LOGO FROM AWS S3
+    const fileName = profile.logo.split('/').at(-1);
+    if (fileName) {
+      await this.awsS3Helper.deleteFile({
+        folder: 'logos',
+        fileName,
+      });
     }
 
     return this.model.delete(id);

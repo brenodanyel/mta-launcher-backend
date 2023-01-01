@@ -20,6 +20,7 @@ export const create = z.object({
       url: z.string().min(5).max(100),
     }),
   ),
+  removeAt: z.date().or(z.null()),
   logo: z
     .object({
       name: z.string().refine(
@@ -60,6 +61,7 @@ export const update = create.partial({
   description: true,
   externalLinks: true,
   logo: true,
+  removeAt: true,
 });
 export type Update = z.infer<typeof update>;
 

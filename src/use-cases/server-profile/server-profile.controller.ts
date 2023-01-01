@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import { Service } from './server-profile.service';
 import { Service as AuthService } from '../auth/auth.service';
+import { hasRole } from '../../utils/roles.middleware';
 
 export class Controller {
   constructor(
@@ -18,10 +19,11 @@ export class Controller {
       description: string;
       logo: string;
       externalLinks: string;
+      removeAt: string | null;
     }
   > = async (req, res, next) => {
     try {
-      const { ip, port, description, externalLinks } = req.body;
+      const { ip, port, description, externalLinks, removeAt } = req.body;
       const logo = req.files?.logo as UploadedFile;
       const { authorization } = req.headers;
 
@@ -34,6 +36,7 @@ export class Controller {
         logo,
         externalLinks: JSON.parse(externalLinks),
         ownerId: user.id,
+        removeAt: removeAt ? new Date(removeAt) : null,
       });
 
       res.status(201).json(product);
@@ -68,6 +71,13 @@ export class Controller {
     try {
       const { authorization } = req.headers;
       const user = await this.authService.verify(String(authorization));
+
+      if (await hasRole(String(authorization), ['admin'])) {
+        const product = await this.service.getAll();
+        res.status(200).json(product);
+        return;
+      }
+
       const product = await this.service.getAllByUserId(user.id);
       res.status(200).json(product);
     } catch (e) {
@@ -99,15 +109,20 @@ export class Controller {
       logo?: string;
       externalLinks?: string;
       ownerId?: string;
+      removeAt?: string | null;
     }
   > = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { ip, port, description, externalLinks } = req.body;
+      const { ip, port, description, externalLinks, ownerId, removeAt } = req.body;
       const logo = req.files?.logo as UploadedFile;
       const { authorization } = req.headers;
 
-      const user = await this.authService.verify(String(authorization));
+      let newOwnerId;
+
+      if (await hasRole(String(authorization), ['admin']) && ownerId) {
+        newOwnerId = ownerId;
+      }
 
       const product = await this.service.update(id, {
         ip,
@@ -115,7 +130,8 @@ export class Controller {
         description,
         logo,
         externalLinks: externalLinks ? JSON.parse(externalLinks) : undefined,
-        ownerId: user.id,
+        ...newOwnerId && { ownerId: newOwnerId },
+        removeAt: removeAt ? new Date(removeAt) : null,
       });
       res.status(200).json(product);
     } catch (e) {

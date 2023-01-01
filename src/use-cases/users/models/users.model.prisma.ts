@@ -3,14 +3,24 @@ import { v4 as uuidv4 } from 'uuid';
 import { client } from '../../../../prisma';
 
 export class PrismaModel implements IUsersModel {
-  private convert(input: User): User {
+  private convert(input: User, includePassword = true): User {
     return {
       id: input.id,
       email: input.email,
       username: input.username,
-      password: input.password,
       roles: input.roles,
+      ...(includePassword && { password: input.password })
     };
+  }
+
+  async findAllUsers(): Promise<User[]> {
+    const users = await client.user.findMany({
+      include: {
+        roles: true,
+      },
+    });
+
+    return users.map((user) => this.convert(user, false));
   }
 
   async findUserById(id: string): Promise<User | null> {

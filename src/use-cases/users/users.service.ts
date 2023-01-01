@@ -8,6 +8,10 @@ import { randomUUID } from 'node:crypto';
 export class Service {
   constructor(private model: IUsersModel = new PrismaModel()) { }
 
+  async findAllUsers() {
+    return this.model.findAllUsers();
+  }
+
   async findUserById(id: string) {
     return this.model.findUserById(id);
   };

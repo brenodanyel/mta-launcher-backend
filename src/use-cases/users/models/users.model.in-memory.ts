@@ -3,6 +3,9 @@ import { User, IUsersModel } from '.';
 export class InMemoryModel implements IUsersModel {
   private users: User[] = [];
 
+  async findAllUsers(): Promise<User[]> {
+    return this.users;
+  }
 
   async findUserById(id: string): Promise<User | null> {
     const user = this.users.find((user) => user.id === id) || null;
