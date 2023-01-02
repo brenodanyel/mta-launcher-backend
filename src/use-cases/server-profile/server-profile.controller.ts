@@ -66,6 +66,7 @@ export class Controller {
       if (ip && port) {
         const result = await this.service.getByIpAndPort({ ip, port: Number(port) });
         res.status(200).json(result);
+        return;
       }
       const result = await this.service.getAll();
       res.status(200).json(result);
