@@ -24,14 +24,18 @@ export class Service {
 
     const id = uuidv4();
 
-    let uploaded = null;
+    let logoUrl = null;
 
     if (logo) {
-      uploaded = await this.awsS3Helper.uploadFile({
+      const uploaded = await this.awsS3Helper.uploadFile({
         file: logo,
         fileId: id,
         folder: 'logos',
       });
+
+      if (uploaded.Location) {
+        logoUrl = uploaded.Location;
+      }
     }
 
     const created = await this.model.create({
@@ -39,7 +43,7 @@ export class Service {
       ip,
       port,
       description,
-      logo: uploaded?.Location || null,
+      logo: logoUrl,
       active: true,
       createdAt: new Date(),
       removeAt,
@@ -101,9 +105,10 @@ export class Service {
       }
     }
 
-    const uploaded =
-      logo &&
-      (await this.awsS3Helper.uploadFile({
+    let logoUrl;
+
+    if (logo) {
+      const uploaded = await this.awsS3Helper.uploadFile({
         file: {
           data: logo.data,
           mimetype: logo.mimetype,
@@ -111,13 +116,16 @@ export class Service {
         },
         fileId: id,
         folder: 'logos',
-      }));
+      });
+
+      logoUrl = uploaded.Location;
+    }
 
     const updated = this.model.update(id, {
       ip,
       port,
       description,
-      logo: uploaded?.Location,
+      logo: logoUrl,
       active: true,
       ownerId,
       externalLinks,

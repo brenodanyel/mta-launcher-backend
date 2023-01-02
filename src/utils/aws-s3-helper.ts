@@ -25,7 +25,7 @@ export class AWS_S3_HELPER {
 
     const extension = file.name.split('.').at(-1);
 
-    const fileName = `${folder}/${fileId}.${extension}`;
+    const fileName = `${folder}/${fileId}.${extension}?${Date.now()}`;
 
     const result = await this.client.upload({
       ACL: "public-read",
@@ -43,9 +43,9 @@ export class AWS_S3_HELPER {
 
     const result = await this.client.deleteObject({
       Bucket: AWS_S3_BUCKET,
-      Key: `${folder}/${fileName}`,
+      Key: `${folder}/${decodeURIComponent(fileName)}`,
     }).promise();
 
     return result;
   }
-}
+};
