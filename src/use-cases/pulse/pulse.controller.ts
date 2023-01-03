@@ -8,6 +8,7 @@ export class Controller {
 
   getStats: RequestHandler = (req, res, next) => {
     try {
+      console.log(req.ip);
       this.service.handlePulse(req.ip);
       const stats = this.service.getStats();
       res.status(200).json(stats);

@@ -8,6 +8,7 @@ generator client {
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -55,7 +56,7 @@ model ServerProfile {
   id            String                      @id
   ip            String
   port          Int
-  description   String
+  description   String                      @db.Text
   logo          String?
   externalLinks ServerProfileExternalLink[]
   createdAt     DateTime                    @default(now())
