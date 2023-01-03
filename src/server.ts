@@ -8,6 +8,8 @@ export class App {
   constructor() {
     this.app.use(express.json());
 
+    this.app.set('trust proxy', true);
+
     this.app.use(fileupload());
 
     this.app.use((_req, res, next) => {

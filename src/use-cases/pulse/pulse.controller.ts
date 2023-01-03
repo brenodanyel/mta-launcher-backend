@@ -8,7 +8,7 @@ export class Controller {
 
   getStats: RequestHandler = (req, res, next) => {
     try {
-      const ip = req.socket.remoteAddress || '';
+      const ip = req.ip;
       console.log(ip);
       this.service.handlePulse(ip);
       const stats = this.service.getStats();
