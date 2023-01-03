@@ -8,8 +8,8 @@ export class Controller {
 
   getStats: RequestHandler = (req, res, next) => {
     try {
-      console.log(req.ip);
-      this.service.handlePulse(req.ip);
+      const ip = req.socket.remoteAddress || '';
+      this.service.handlePulse(ip);
       const stats = this.service.getStats();
       res.status(200).json(stats);
     } catch (e) {
