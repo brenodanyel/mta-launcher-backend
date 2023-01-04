@@ -14,7 +14,7 @@ export function hasRole(authorization: string, checkRoles: string[]) {
       }
 
       for (const role of user?.roles) {
-        if (checkRoles.includes(role)) {
+        if (checkRoles.includes(role.slug)) {
           resolve(true);
           return;
         }
