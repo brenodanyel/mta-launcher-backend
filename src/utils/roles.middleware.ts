@@ -3,7 +3,7 @@ import { Service as AuthService } from '../use-cases/auth/auth.service';
 
 const authService = new AuthService();
 
-export function hasRole(authorization: string, role: string[]) {
+export function hasRole(authorization: string, checkRoles: string[]) {
   return new Promise(async (resolve) => {
     try {
       const user = await authService.verify(authorization);
@@ -14,7 +14,7 @@ export function hasRole(authorization: string, role: string[]) {
       }
 
       for (const role of user?.roles) {
-        if (role.includes(role)) {
+        if (checkRoles.includes(role)) {
           resolve(true);
           return;
         }
